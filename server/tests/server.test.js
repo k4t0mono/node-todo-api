@@ -4,27 +4,12 @@ const expect = require('expect');
 const request = require('supertest');
 const { ObjectID } = require('mongodb');
 
-var { app } = require('./../server.js');
+const { app } = require('./../server.js');
 const { Todo } = require('./../models/todo.js');
+const { DummyTodo, populateTodos, DummyUser, populateUsers } = require('./seed/seed.js');
 
-const DummyTodo = [
-	{ 
-		_id: new ObjectID(),
-		text: 'Dummy todo 1'
-	},
-	{ 
-		_id: new ObjectID(),
-		text: 'Nobody expects the Spanish Inquisition',
-		completed: true,
-		completedAt: 1518704665
-	}
-];
-
-beforeEach((done) => {
-	Todo.remove({}).then(() => {
-		Todo.insertMany(DummyTodo);
-	}).then(() => done());
-});
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
 describe('POST /todos', () => {
 
