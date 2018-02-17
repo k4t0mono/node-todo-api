@@ -16,7 +16,7 @@ const DummyUser = [
 		tokens: [
 			{
 				access: 'auth',
-				token: jwt.sign({ id: user0ID, access: 'auth' }, 'abc123').toString()
+				token: jwt.sign({ _id: user0ID, access: 'auth' }, 'abc123').toString()
 			}
 		]
 	},

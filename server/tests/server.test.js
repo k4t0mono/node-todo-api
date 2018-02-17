@@ -6,6 +6,7 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('./../server.js');
 const { Todo } = require('./../models/todo.js');
+const { User } = require('./../models/user.js');
 const { DummyTodo, populateTodos, DummyUser, populateUsers } = require('./seed/seed.js');
 
 beforeEach(populateUsers);
@@ -190,6 +191,82 @@ describe('PATCH /todos/:todoID', () => {
 	it('Should return 400 if object id is invalid', (done) => {
 		request(app)
 			.patch('/todos/k4t0')
+			.expect(400)
+			.end(done);
+	});
+
+});
+
+
+describe('GET /users/me', () => {
+
+	it('Should return user if authenticated', (done) => {
+		var user = DummyUser[0];
+
+		request(app)
+			.get('/users/me')
+			.set('x-auth', user.tokens[0].token)
+			.expect(200)
+			.expect((res) => {
+				expect(res.body._id).toBe(user._id.toHexString());
+				expect(res.body.email).toBe(user.email);
+			})
+			.end(done);
+	});
+
+	it('Should return 401 if not authenticated', (done) => {
+		request(app)
+			.get('/users/me')
+			.expect(401)
+			.expect((res) => {
+				expect(res.body).toEqual({})
+			})
+			.end(done);
+	});
+
+});
+
+
+describe('POST /users', () => {
+	
+	it('Should create a user', (done) => {
+		var email = 'k4t0@terminus.io';
+		var password = '123qwe.';
+
+		request(app)
+			.post('/users')
+			.send({ email, password })
+			.expect(201)
+			.expect((res) => {
+				expect(res.headers['x-auth']).toExist();
+				expect(res.body._id).toExist();
+				expect(res.body.email).toBe(email);
+			})
+			.end((err) => {
+				if(err) { done(err); }
+
+				User.findOne({ email }).then((user) => {
+					expect(user).toExist();
+					expect(user.password).toNotBe(password);
+					done();
+				});
+			});
+	});
+
+	it('Should return validation errors if request is invalid', (done) => {
+		request(app)
+			.post('/users')
+			.send({ email: 'k@t', password: '123' })
+			.expect(400)
+			.end(done);
+	});
+
+	it('Should not create user if in use', (done) => {
+		var email = DummyUser[0].email;
+
+		request(app)
+			.post('/users')
+			.send({ email, password: '12345678' })
 			.expect(400)
 			.end(done);
 	});

@@ -57,8 +57,6 @@ UserSchema.methods.generateAuthToken = function() {
 UserSchema.statics.findByToken = function (token) {
 	var User = this;
 	var decoded;
-	
-	console.log(token);
 
 	try {
 		decoded = jwt.verify(token, 'abc123');
