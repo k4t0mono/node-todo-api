@@ -23,7 +23,13 @@ const DummyUser = [
 	{
 		_id: user1ID,
 		email: 'email1@example.com',
-		password: 'somepass2'
+		password: 'somepass2',
+		tokens: [
+			{
+				access: 'auth',
+				token: jwt.sign({ _id: user1ID, access: 'auth' }, 'abc123').toString()
+			}
+		]
 	}
 ];
 
