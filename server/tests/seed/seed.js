@@ -1,10 +1,13 @@
 // Dummy database
 
+const { JWT_SECRET } = process.env;
+
 const { ObjectID } = require('mongodb');
 const jwt = require('jsonwebtoken');
 
 const { Todo } = require('./../../models/todo.js');
 const { User } = require('./../../models/user.js');
+
 
 var user0ID = new ObjectID();
 var user1ID = new ObjectID();
@@ -16,7 +19,7 @@ const DummyUser = [
 		tokens: [
 			{
 				access: 'auth',
-				token: jwt.sign({ _id: user0ID, access: 'auth' }, 'abc123').toString()
+				token: jwt.sign({ _id: user0ID, access: 'auth' }, JWT_SECRET).toString()
 			}
 		]
 	},
@@ -27,7 +30,7 @@ const DummyUser = [
 		tokens: [
 			{
 				access: 'auth',
-				token: jwt.sign({ _id: user1ID, access: 'auth' }, 'abc123').toString()
+				token: jwt.sign({ _id: user1ID, access: 'auth' }, JWT_SECRET).toString()
 			}
 		]
 	}

@@ -1,10 +1,13 @@
 // User model
 
+const { JWT_SECRET } = process.env;
+
 const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+
 
 var UserSchema = new mongoose.Schema({
 	email: {
@@ -45,7 +48,7 @@ UserSchema.methods.toJSON = function() {
 
 UserSchema.methods.generateAuthToken = function() {
 	var access = 'auth';
-	var token = jwt.sign({ _id: this._id.toHexString(), access }, 'abc123').toString();
+	var token = jwt.sign({ _id: this._id.toHexString(), access }, JWT_SECRET).toString();
 	this.tokens = this.tokens.concat([{ access, token }]);
 
 	return this.save().then(() => {
@@ -64,7 +67,7 @@ UserSchema.statics.findByToken = function (token) {
 	var decoded;
 
 	try {
-		decoded = jwt.verify(token, 'abc123');
+		decoded = jwt.verify(token, JWT_SECRET);
 	} catch (e) {
 		return Promise.reject();
 	}
