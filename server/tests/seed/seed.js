@@ -30,13 +30,15 @@ const DummyUser = [
 const DummyTodo = [
 	{ 
 		_id: new ObjectID(),
-		text: 'Dummy todo 1'
+		text: 'Dummy todo 1',
+		_user: DummyUser[0]._id
 	},
 	{ 
 		_id: new ObjectID(),
 		text: 'Nobody expects the Spanish Inquisition',
 		completed: true,
-		completedAt: 1518704665
+		completedAt: 1518704665,
+		_user: DummyUser[1]._id
 	}
 ];
 
